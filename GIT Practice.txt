@@ -1,0 +1,49 @@
+import boto3
+
+# Specify the region to launch the instance. Change this to your desired region.
+region = 'us-west-2'
+
+# Specify the AMI ID of the instance you want to launch.
+ami_id = 'ami-12345678'
+
+# Specify the instance type (e.g., t2.micro, m5.large, etc.).
+instance_type = 't2.medium'
+
+# Specify the key pair name you want to use to connect to the instance.
+key_name = 'your_key_pair_name'
+
+# Specify the security group IDs to associate with the instance.
+security_group_ids = ['sg-12345678']
+
+# Specify the IAM role ARN if you want to associate with the instance.
+iam_instance_profile = {
+    'Arn': 'arn:aws:iam::123456789012:instance-profile/your-iam-role'
+}
+
+# Specify the subnet ID where you want to launch the instance.
+subnet_id = 'subnet-12345678'
+
+# Specify the user data script if needed.
+# user_data = '''#!/bin/bash
+# echo "Hello from User Data!"
+# '''
+
+# Create a Boto3 EC2 client
+ec2_client = boto3.client('ec2', region_name=region)
+
+# Launch the EC2 instance
+response = ec2_client.run_instances(
+    ImageId=ami_id,
+    InstanceType=instance_type,
+    KeyName=key_name,
+    SecurityGroupIds=security_group_ids,
+    SubnetId=subnet_id,
+    IamInstanceProfile=iam_instance_profile,
+    # UserData=user_data,  # Uncomment this line if you have user data script
+    MinCount=1,
+    MaxCount=1
+)
+
+# Print the instance ID of the launched instance
+instance_id = response['Instances'][0]['InstanceId']
+print(f'Instance ID: {instance_id}')
